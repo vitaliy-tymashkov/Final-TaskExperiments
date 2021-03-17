@@ -2,10 +2,12 @@ package com.epam.engx.cleancode.finaltask.task1;
 
 import com.epam.engx.cleancode.finaltask.task1.thirdpartyjar.Command;
 import com.epam.engx.cleancode.finaltask.task1.thirdpartyjar.DataSet;
-import com.epam.engx.cleancode.finaltask.task1.thirdpartyjar.View;
 import com.epam.engx.cleancode.finaltask.task1.thirdpartyjar.DatabaseManager;
+import com.epam.engx.cleancode.finaltask.task1.thirdpartyjar.View;
 
 import java.util.List;
+
+import static com.epam.engx.cleancode.finaltask.task1.PrintConstants.*;
 
 public class Print implements Command {
 
@@ -23,7 +25,7 @@ public class Print implements Command {
     }
 
     public void process(String input) {
-        String[] command = input.split(" ");
+        String[] command = input.split(SYMBOL_SPACE);
         if (command.length != 2) {
             throw new IllegalArgumentException("incorrect number of parameters. Expected 1, but is " + (command.length - 1));
         }
@@ -43,19 +45,19 @@ public class Print implements Command {
     }
 
     private String getEmptyTable(String tableName) {
-        String textEmptyTable = "║ Table '" + tableName + "' is empty or does not exist ║";
-        String result = "╔";
+        String textEmptyTable = SYMBOL_VERTICAL_LINE + " Table '" + tableName + "' is empty or does not exist " + SYMBOL_VERTICAL_LINE;
+        String result = SYMBOL_LEFT_TOP_ANGLE;
 
         for (int i = 0; i < textEmptyTable.length() - 2; i++) {
-            result += "═";
+            result += SYMBOL_HORIZONTAL_LINE;
         }
-        result += "╗\n";
+        result += SYMBOL_RIGHT_TOP_ANGLE + "\n";
         result += textEmptyTable + "\n";
-        result += "╚";
+        result += SYMBOL_LEFT_BOTTOM_ANGLE;
         for (int i = 0; i < textEmptyTable.length() - 2; i++) {
-            result += "═";
+            result += SYMBOL_HORIZONTAL_LINE;
         }
-        result += "╝\n";
+        result += SYMBOL_RIGHT_BOTTOM_ANGLE + "\n";
 
         return result;
     }
@@ -98,55 +100,55 @@ public class Print implements Command {
 
         for (int row = 0; row < rowsCount; row++) {
             List<Object> values = dataSets.get(row).getValues();
-            result += "║";
+            result += SYMBOL_VERTICAL_LINE;
             for (int column = 0; column < columnCount; column++) {
                 int valuesLength = String.valueOf(values.get(column)).length();
                 if (valuesLength % 2 == 0) {
                     for (int j = 0; j < (maxColumnSize - valuesLength) / 2; j++) {
-                        result += " ";
+                        result += SYMBOL_SPACE;
                     }
                     result += String.valueOf(values.get(column));
                     for (int j = 0; j < (maxColumnSize - valuesLength) / 2; j++) {
-                        result += " ";
+                        result += SYMBOL_SPACE;
                     }
-                    result += "║";
+                    result += SYMBOL_VERTICAL_LINE;
                 } else {
                     for (int j = 0; j < (maxColumnSize - valuesLength) / 2; j++) {
-                        result += " ";
+                        result += SYMBOL_SPACE;
                     }
                     result += String.valueOf(values.get(column));
                     for (int j = 0; j <= (maxColumnSize - valuesLength) / 2; j++) {
-                        result += " ";
+                        result += SYMBOL_SPACE;
                     }
-                    result += "║";
+                    result += SYMBOL_VERTICAL_LINE;
                 }
             }
             result += "\n";
             if (row < rowsCount - 1) {
-                result += "╠";
+                result += SYMBOL_LEFT_T;
                 for (int j = 1; j < columnCount; j++) {
                     for (int i = 0; i < maxColumnSize; i++) {
-                        result += "═";
+                        result += SYMBOL_HORIZONTAL_LINE;
                     }
-                    result += "╬";
+                    result += SYMBOL_CROSS;
                 }
                 for (int i = 0; i < maxColumnSize; i++) {
-                    result += "═";
+                    result += SYMBOL_HORIZONTAL_LINE;
                 }
-                result += "╣\n";
+                result += SYMBOL_RIGHT_T + "\n";
             }
         }
-        result += "╚";
+        result += SYMBOL_LEFT_BOTTOM_ANGLE;
         for (int j = 1; j < columnCount; j++) {
             for (int i = 0; i < maxColumnSize; i++) {
-                result += "═";
+                result += SYMBOL_HORIZONTAL_LINE;
             }
-            result += "╩";
+            result += SYMBOL_BOTTOM_T;
         }
         for (int i = 0; i < maxColumnSize; i++) {
-            result += "═";
+            result += SYMBOL_HORIZONTAL_LINE;
         }
-        result += "╝\n";
+        result += SYMBOL_RIGHT_BOTTOM_ANGLE + "\n";
         return result;
     }
 
@@ -168,67 +170,67 @@ public class Print implements Command {
         } else {
             maxColumnSize += 3;
         }
-        result += "╔";
+        result += SYMBOL_LEFT_TOP_ANGLE;
         for (int j = 1; j < columnCount; j++) {
             for (int i = 0; i < maxColumnSize; i++) {
-                result += "═";
+                result += SYMBOL_HORIZONTAL_LINE;
             }
-            result += "╦";
+            result += SYMBOL_TOP_T;
         }
         for (int i = 0; i < maxColumnSize; i++) {
-            result += "═";
+            result += SYMBOL_HORIZONTAL_LINE;
         }
-        result += "╗\n";
+        result += SYMBOL_RIGHT_TOP_ANGLE + "\n";
 
         List<String> columnNames = dataSets.get(0).getColumnNames();
         for (int column = 0; column < columnCount; column++) {
-            result += "║";
+            result += SYMBOL_VERTICAL_LINE;
             int columnNamesLength = columnNames.get(column).length();
             if (columnNamesLength % 2 == 0) {
                 for (int j = 0; j < (maxColumnSize - columnNamesLength) / 2; j++) {
-                    result += " ";
+                    result += SYMBOL_SPACE;
                 }
                 result += columnNames.get(column);
                 for (int j = 0; j < (maxColumnSize - columnNamesLength) / 2; j++) {
-                    result += " ";
+                    result += SYMBOL_SPACE;
                 }
             } else {
                 for (int j = 0; j < (maxColumnSize - columnNamesLength) / 2; j++) {
-                    result += " ";
+                    result += SYMBOL_SPACE;
                 }
                 result += columnNames.get(column);
                 for (int j = 0; j <= (maxColumnSize - columnNamesLength) / 2; j++) {
-                    result += " ";
+                    result += SYMBOL_SPACE;
                 }
             }
         }
-        result += "║\n";
+        result += SYMBOL_VERTICAL_LINE + "\n";
 
         //last string of the header
         if (dataSets.size() > 0) {
-            result += "╠";
+            result += SYMBOL_LEFT_T;
             for (int j = 1; j < columnCount; j++) {
                 for (int i = 0; i < maxColumnSize; i++) {
-                    result += "═";
+                    result += SYMBOL_HORIZONTAL_LINE;
                 }
-                result += "╬";
+                result += SYMBOL_CROSS;
             }
             for (int i = 0; i < maxColumnSize; i++) {
-                result += "═";
+                result += SYMBOL_HORIZONTAL_LINE;
             }
-            result += "╣\n";
+            result += SYMBOL_RIGHT_T + "\n";
         } else {
-            result += "╚";
+            result += SYMBOL_LEFT_BOTTOM_ANGLE;
             for (int j = 1; j < columnCount; j++) {
                 for (int i = 0; i < maxColumnSize; i++) {
-                    result += "═";
+                    result += SYMBOL_HORIZONTAL_LINE;
                 }
-                result += "╩";
+                result += SYMBOL_BOTTOM_T;
             }
             for (int i = 0; i < maxColumnSize; i++) {
-                result += "═";
+                result += SYMBOL_HORIZONTAL_LINE;
             }
-            result += "╝\n";
+            result += SYMBOL_RIGHT_BOTTOM_ANGLE + "\n";
         }
         return result;
     }
