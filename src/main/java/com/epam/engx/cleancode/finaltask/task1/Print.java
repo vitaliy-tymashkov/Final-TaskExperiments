@@ -6,15 +6,17 @@ import com.epam.engx.cleancode.finaltask.task1.thirdpartyjar.DatabaseManager;
 import com.epam.engx.cleancode.finaltask.task1.thirdpartyjar.View;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.epam.engx.cleancode.finaltask.task1.PrintConstants.*;
 
 public class Print implements Command {
 
-    private static final int COMMAND_INDEX = 1;
-    private static final int ALLOWED_PARAMETERS_VALUE = 2;
     public static final int ADD_2 = 2;
     public static final int ADD_3 = 3;
+    private static final int COMMAND_INDEX = 1;
+    private static final int ALLOWED_PARAMETERS_VALUE = 2;
     private static final String PRINT_COMMAND = "print ";
     private static final String EXCEPTION_TEXT_TEMPLATE = "incorrect number of parameters. Expected 1, but is %s";
     private static final String NOT_EXISTING_TABLE_TEMPLATE = "%s Table '%s' is empty or does not exist %s";
@@ -63,7 +65,7 @@ public class Print implements Command {
     }
 
     private StringBuilder getEmptyTable(String tableName) {
-        String textEmptyTable = String.format(NOT_EXISTING_TABLE_TEMPLATE,SYMBOL_VERTICAL_LINE, tableName, SYMBOL_VERTICAL_LINE);
+        String textEmptyTable = String.format(NOT_EXISTING_TABLE_TEMPLATE, SYMBOL_VERTICAL_LINE, tableName, SYMBOL_VERTICAL_LINE);
         int max = getTableLength(textEmptyTable);
 
         StringBuilder result = new StringBuilder(SYMBOL_LEFT_TOP_ANGLE);
@@ -87,24 +89,36 @@ public class Print implements Command {
     private int getMaxColumnSize(List<DataSet> dataSets) {
         int maxLength = 0;
         if (isNotDataSetEmpty(dataSets)) {
-            List<String> columnNames = dataSets.get(FIRST_ELEMENT).getColumnNames();
-            for (String columnName : columnNames) {
-                if (columnName.length() > maxLength) {
-                    maxLength = columnName.length();
-                }
-            }
-            for (DataSet dataSet : dataSets) {
-                List<Object> values = dataSet.getValues();
-                for (Object value : values) {
-//                    if (value instanceof String)
-                    if (String.valueOf(value).length() > maxLength) {
-                        maxLength = String.valueOf(value).length();
-                    }
-                }
-            }
+            maxLength = getMaxLengthFromHeader(dataSets, maxLength);
+            maxLength = getMaxFromDataSet(dataSets, maxLength);
         }
 
         return maxLength;
+    }
+
+    private int getMaxLengthFromHeader(List<DataSet> dataSets, int maxLength) {
+        maxLength = checkAllElements(maxLength, dataSets.get(FIRST_ELEMENT).getColumnNames());
+        return maxLength;
+    }
+
+    private int getMaxFromDataSet(List<DataSet> dataSets, int maxLength) {
+        for (DataSet dataSet : dataSets) {
+            maxLength = checkAllElements(maxLength, dataSet.getValues());
+        }
+        return maxLength;
+    }
+
+    private int checkAllElements(int max, List<? super String> values) {
+        Optional<Integer> maxValue = values.stream().map(value -> String.valueOf(value).length()).max(Integer::compareTo);
+        return pickMaxValue(max, maxValue.orElse(max));
+    }
+
+    private int pickMaxValue(int max, int currentMax) {
+        return isMoreThanMax2(max, currentMax) ? currentMax : max;
+    }
+
+    private boolean isMoreThanMax2(int max, int max2) {
+        return max2 > max;
     }
 
     private StringBuilder getStringTableData(List<DataSet> dataSets) {
@@ -179,9 +193,9 @@ public class Print implements Command {
     }
 
     private void fillTableWithData(StringBuilder result, int maxColumnSize, int columnCount,
-                                            List<? super String> values,
-                                            String symbolVerticalLineFromTheRightSide,
-                                            String symbolVerticalLineFromTheLeftSide) {
+                                   List<? super String> values,
+                                   String symbolVerticalLineFromTheRightSide,
+                                   String symbolVerticalLineFromTheLeftSide) {
         for (int column = 0; column < columnCount; column++) {
             result.append(symbolVerticalLineFromTheLeftSide);
             int valuesLength = String.valueOf(values.get(column)).length();
