@@ -11,6 +11,11 @@ import static com.epam.engx.cleancode.finaltask.task1.PrintConstants.*;
 
 public class Print implements Command {
 
+    private static final int COMMAND_INDEX = 1;
+    private static final String PRINT_COMMAND = "print ";
+    private static final int ALLOWED_PARAMETERS_VALUE = 2;
+    private static final String EXCEPTION_TEXT_TEMPLATE = "incorrect number of parameters. Expected 1, but is %s";
+
     private View view;
     private DatabaseManager manager;
     private String tableName;
@@ -21,17 +26,29 @@ public class Print implements Command {
     }
 
     public boolean canProcess(String command) {
-        return command.startsWith("print ");
+        return command.startsWith(PRINT_COMMAND);
     }
 
     public void process(String input) {
         String[] command = input.split(SYMBOL_SPACE);
-        if (command.length != 2) {
-            throw new IllegalArgumentException("incorrect number of parameters. Expected 1, but is " + (command.length - 1));
-        }
-        tableName = command[1];
+        validateParametersQuantity(command);
+        tableName = command[COMMAND_INDEX];
         List<DataSet> data = manager.getTableData(tableName);
         view.write(getTableString(data));
+    }
+
+    private void validateParametersQuantity(String[] command) {
+        if (isNotValidCommand(command)) {
+            throw new IllegalArgumentException(String.format(EXCEPTION_TEXT_TEMPLATE, getActualParametersQuantity(command)));
+        }
+    }
+
+    private int getActualParametersQuantity(String[] command) {
+        return command.length - 1;
+    }
+
+    private boolean isNotValidCommand(String[] command) {
+        return command.length != ALLOWED_PARAMETERS_VALUE;
     }
 
     private String getTableString(List<DataSet> data) {
