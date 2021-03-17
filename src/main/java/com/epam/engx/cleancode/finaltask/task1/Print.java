@@ -52,13 +52,12 @@ public class Print implements Command {
     }
 
     private String getTableString(List<DataSet> data) {
-        int maxColumnSize;
-        maxColumnSize = getMaxColumnSize(data);
-        if (maxColumnSize == 0) {
-            return getEmptyTable(tableName);
-        } else {
-            return getHeaderOfTheTable(data) + getStringTableData(data);
-        }
+        int maxColumnSize = getMaxColumnSize(data);
+        return areNoColumns(maxColumnSize) ? getEmptyTable(tableName) : getHeaderOfTheTable(data) + getStringTableData(data);
+    }
+
+    private boolean areNoColumns(int maxColumnSize) {
+        return maxColumnSize == 0;
     }
 
     private String getEmptyTable(String tableName) {
@@ -81,7 +80,7 @@ public class Print implements Command {
 
     private int getMaxColumnSize(List<DataSet> dataSets) {
         int maxLength = 0;
-        if (dataSets.size() > 0) {
+        if (isNotDataSetEmpty(dataSets)) {
             List<String> columnNames = dataSets.get(0).getColumnNames();
             for (String columnName : columnNames) {
                 if (columnName.length() > maxLength) {
@@ -170,11 +169,11 @@ public class Print implements Command {
     }
 
     private int getColumnCount(List<DataSet> dataSets) {
-        int result = 0;
-        if (dataSets.size() > 0) {
-            return dataSets.get(0).getColumnNames().size();
-        }
-        return result;
+        return isNotDataSetEmpty(dataSets) ? dataSets.get(0).getColumnNames().size() : 0;
+    }
+
+    private boolean isNotDataSetEmpty(List<DataSet> dataSets) {
+        return dataSets.size() > 0;
     }
 
     private String getHeaderOfTheTable(List<DataSet> dataSets) {
@@ -224,7 +223,7 @@ public class Print implements Command {
         result += SYMBOL_VERTICAL_LINE + "\n";
 
         //last string of the header
-        if (dataSets.size() > 0) {
+        if (isNotDataSetEmpty(dataSets)) {
             result += SYMBOL_LEFT_T;
             for (int j = 1; j < columnCount; j++) {
                 for (int i = 0; i < maxColumnSize; i++) {
