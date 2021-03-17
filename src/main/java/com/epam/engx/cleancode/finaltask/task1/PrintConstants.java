@@ -14,6 +14,8 @@ public final class PrintConstants {
     public static final String SYMBOL_RIGHT_TOP_ANGLE = "╗";
     public static final String SYMBOL_LEFT_BOTTOM_ANGLE = "╚";
     public static final String SYMBOL_RIGHT_BOTTOM_ANGLE = "╝";
+    public static final String LINE_BREAK = "\n";
+    public static final String SKIP_VERTICAL_LINE = "";
 
     private PrintConstants() {
         throw new UnsupportedOperationException();
