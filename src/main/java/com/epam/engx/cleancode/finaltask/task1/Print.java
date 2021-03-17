@@ -1,14 +1,11 @@
 package com.epam.engx.cleancode.finaltask.task1;
 
-
-
 import com.epam.engx.cleancode.finaltask.task1.thirdpartyjar.Command;
 import com.epam.engx.cleancode.finaltask.task1.thirdpartyjar.DataSet;
 import com.epam.engx.cleancode.finaltask.task1.thirdpartyjar.View;
 import com.epam.engx.cleancode.finaltask.task1.thirdpartyjar.DatabaseManager;
 
 import java.util.List;
-
 
 public class Print implements Command {
 
@@ -48,6 +45,7 @@ public class Print implements Command {
     private String getEmptyTable(String tableName) {
         String textEmptyTable = "║ Table '" + tableName + "' is empty or does not exist ║";
         String result = "╔";
+
         for (int i = 0; i < textEmptyTable.length() - 2; i++) {
             result += "═";
         }
@@ -58,6 +56,7 @@ public class Print implements Command {
             result += "═";
         }
         result += "╝\n";
+
         return result;
     }
 
@@ -74,12 +73,13 @@ public class Print implements Command {
                 List<Object> values = dataSet.getValues();
                 for (Object value : values) {
 //                    if (value instanceof String)
-                        if (String.valueOf(value).length() > maxLength) {
-                            maxLength = String.valueOf(value).length();
-                        }
+                    if (String.valueOf(value).length() > maxLength) {
+                        maxLength = String.valueOf(value).length();
+                    }
                 }
             }
         }
+
         return maxLength;
     }
 
@@ -88,12 +88,14 @@ public class Print implements Command {
         rowsCount = dataSets.size();
         int maxColumnSize = getMaxColumnSize(dataSets);
         String result = "";
+
         if (maxColumnSize % 2 == 0) {
             maxColumnSize += 2;
         } else {
             maxColumnSize += 3;
         }
         int columnCount = getColumnCount(dataSets);
+
         for (int row = 0; row < rowsCount; row++) {
             List<Object> values = dataSets.get(row).getValues();
             result += "║";
@@ -160,6 +162,7 @@ public class Print implements Command {
         int maxColumnSize = getMaxColumnSize(dataSets);
         String result = "";
         int columnCount = getColumnCount(dataSets);
+
         if (maxColumnSize % 2 == 0) {
             maxColumnSize += 2;
         } else {
@@ -176,6 +179,7 @@ public class Print implements Command {
             result += "═";
         }
         result += "╗\n";
+
         List<String> columnNames = dataSets.get(0).getColumnNames();
         for (int column = 0; column < columnCount; column++) {
             result += "║";
