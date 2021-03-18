@@ -1,6 +1,6 @@
 package com.epam.engx.cleancode.finaltask.task1;
 
-public final class PrintConstants {
+public final class PrintSymbolsConstants {
 
     public static final String SYMBOL_SPACE = " ";
     public static final String SYMBOL_CROSS = "╬";
@@ -16,8 +16,4 @@ public final class PrintConstants {
     public static final String SYMBOL_RIGHT_BOTTOM_ANGLE = "╝";
     public static final String LINE_BREAK = "\n";
     public static final String SKIP_VERTICAL_LINE = "";
-
-    private PrintConstants() {
-        throw new UnsupportedOperationException();
-    }
 }
