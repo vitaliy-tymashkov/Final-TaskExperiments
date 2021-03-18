@@ -180,14 +180,14 @@ public class Print implements Command {
         return getTopPart(result, maxColumnSize, columnCount, SYMBOL_LEFT_BOTTOM_ANGLE, SYMBOL_BOTTOM_T, SYMBOL_RIGHT_BOTTOM_ANGLE);
     }
 
-    private StringBuilder getTopPart(StringBuilder result, int maxColumnSize, int columnCount, String symbolLeftBottomAngle, String symbolBottomT, String symbolRightBottomAngle) {
-        result.append(symbolLeftBottomAngle);
+    private StringBuilder getTopPart(StringBuilder result, int maxColumnSize, int columnCount, String symbolLeftAngle, String symbolT, String symbolRightAngle) {
+        result.append(symbolLeftAngle);
         for (int j = 1; j < columnCount; j++) {
             fillWithSymbols(result, maxColumnSize, SYMBOL_HORIZONTAL_LINE);
-            result.append(symbolBottomT);
+            result.append(symbolT);
         }
         fillWithSymbols(result, maxColumnSize, SYMBOL_HORIZONTAL_LINE);
-        result.append(symbolRightBottomAngle);
+        result.append(symbolRightAngle);
         result.append(LINE_BREAK);
         return result;
     }
