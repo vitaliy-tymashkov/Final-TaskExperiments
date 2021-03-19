@@ -10,7 +10,7 @@ public class PrinterPredicates {
     public static final int EMPTY = 0;
 
 
-    protected boolean areNoColumns(int maxColumnSize) {
+    protected boolean isEmptyTable(int maxColumnSize) {
         return maxColumnSize == EMPTY;
     }
 
@@ -18,16 +18,12 @@ public class PrinterPredicates {
         return (command.length != ALLOWED_PARAMETERS_VALUE);
     }
 
-    protected boolean isMoreThanMax2(int max, int max2) {
-        return max2 > max;
-    }
-
-    protected boolean checkRow(int row, int rowsCount) {
+    protected boolean isNotLastRow(int row, int rowsCount) {
         return row < (rowsCount - 1);
     }
 
-    protected boolean isEvenColumnsSize(int size) {
-        return (size % 2 == 0);
+    protected boolean isEven(int i) {
+        return (i % 2 == 0);
     }
 
     protected boolean isNotEmptyDataSet(List<DataSet> dataSets) {

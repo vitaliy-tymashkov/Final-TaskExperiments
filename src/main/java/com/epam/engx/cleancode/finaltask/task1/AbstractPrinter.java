@@ -16,15 +16,15 @@ public abstract class AbstractPrinter extends AbstractCommandAndParametersValida
 
     private static final int FIRST_ELEMENT = 0;
     private static final int NO_COLUMNS = 0;
-    private static final int ADD_2 = 2;
-    private static final int ADD_3 = 3;
+    private static final int ALIGN_FOR_EVEN = 2;
+    private static final int ALIGN_FOR_ODD = 3;
 
     private static PrinterPredicates checker = new PrinterPredicates();
 
     protected String getTableString(DatabaseManager manager, String tableName) {
         List<DataSet> data = manager.getTableData(tableName);
 
-        return checker.areNoColumns(getMaxColumnSize(data))
+        return checker.isEmptyTable(getMaxColumnSize(data))
                 ? getEmptyTable(tableName)
                 : getHeaderOfTheTable(data) + getStringTableData(data);
     }
@@ -59,7 +59,7 @@ public abstract class AbstractPrinter extends AbstractCommandAndParametersValida
 
         getPartOfTable(result, columnSize, columnCount, SYMBOL_LEFT_TOP_ANGLE, SYMBOL_TOP_T, SYMBOL_RIGHT_TOP_ANGLE);
         List<String> columnNames = dataSets.get(FIRST_ELEMENT).getColumnNames();
-        fillTableWithData(result, columnSize, columnCount, columnNames, SKIP_VERTICAL_LINE, SYMBOL_VERTICAL_LINE);
+        fillTableWithData(result, columnSize, columnCount, columnNames, SYMBOL_VERTICAL_LINE, SKIP_VERTICAL_LINE);
         appendSymbols(result, SYMBOL_VERTICAL_LINE, LINE_BREAK);
 
         return columnSize;
@@ -75,25 +75,26 @@ public abstract class AbstractPrinter extends AbstractCommandAndParametersValida
         int columnCount = getColumnCount(dataSets);
         int rowsCount = dataSets.size();
 
-        fillTableWithVAlues(dataSets, result, columnSize, columnCount, rowsCount);
+        fillTableWithValues(result, dataSets, columnSize, columnCount, rowsCount);
         getBottomPart(result, columnSize, columnCount);
 
         return result.toString();
     }
 
-    private void fillTableWithVAlues(List<DataSet> dataSets, StringBuilder result, int columnSize, int columnCount, int rowsCount) {
+    private void fillTableWithValues(StringBuilder result, List<DataSet> dataSets,
+                                     int columnSize, int columnCount, int rowsCount) {
         for (int i = 0; i < rowsCount; i++) {
             appendSymbols(result, SYMBOL_VERTICAL_LINE);
             List<Object> values = dataSets.get(i).getValues();
-            fillTableWithData(result, columnSize, columnCount, values, SYMBOL_VERTICAL_LINE, SKIP_VERTICAL_LINE);
+            fillTableWithData(result, columnSize, columnCount, values, SKIP_VERTICAL_LINE, SYMBOL_VERTICAL_LINE);
             getMiddlePart(result, rowsCount, columnSize, columnCount, i);
         }
     }
 
     private void fillTableWithData(StringBuilder result, int maxColumnSize, int columnCount,
                                    List<? super String> values,
-                                   String symbolVerticalLineFromTheRightSide,
-                                   String symbolVerticalLineFromTheLeftSide) {
+                                   String symbolVerticalLineFromTheLeftSide,
+                                   String symbolVerticalLineFromTheRightSide) {
         for (int column = 0; column < columnCount; column++) {
             result.append(symbolVerticalLineFromTheLeftSide);
             int valuesLength = String.valueOf(values.get(column)).length();
@@ -104,7 +105,7 @@ public abstract class AbstractPrinter extends AbstractCommandAndParametersValida
 
     private void fillCellDependingOnSize(StringBuilder result, List<? super String> values,
                                          String symbolVerticalLineFromTheRightSide, int column, int valuesLength, int length) {
-        if (checker.isEvenColumnsSize(valuesLength)) {
+        if (checker.isEven(valuesLength)) {
             fillCell(result, values, symbolVerticalLineFromTheRightSide, column, length, length);
         } else {
             fillCell(result, values, symbolVerticalLineFromTheRightSide, column, length, getLengthForLastCell(length));
@@ -131,7 +132,7 @@ public abstract class AbstractPrinter extends AbstractCommandAndParametersValida
 
     private void getMiddlePart(StringBuilder result, int rowsCount, int maxColumnSize, int columnCount, int row) {
         appendSymbols(result, LINE_BREAK);
-        if (checker.checkRow(row, rowsCount)) {
+        if (checker.isNotLastRow(row, rowsCount)) {
             getPartOfTable(result, maxColumnSize, columnCount, SYMBOL_LEFT_T, SYMBOL_CROSS, SYMBOL_RIGHT_T);
         }
     }
@@ -149,7 +150,9 @@ public abstract class AbstractPrinter extends AbstractCommandAndParametersValida
     }
 
     private StringBuilder getPartOfTable(StringBuilder result, int maxColumnSize, int columnCount,
-                                         String symbolLeftAngle, String symbolT, String symbolRightAngle) {
+                                         String symbolLeftAngle,
+                                         String symbolT,
+                                         String symbolRightAngle) {
         appendSymbols(result, symbolLeftAngle);
         getChunkWithTsymbol(result, maxColumnSize, columnCount, symbolT);
         fillWithSymbols(result, maxColumnSize, SYMBOL_HORIZONTAL_LINE);
@@ -189,13 +192,13 @@ public abstract class AbstractPrinter extends AbstractCommandAndParametersValida
     }
 
     private int pickMaxValue(int max, int currentMax) {
-        return checker.isMoreThanMax2(max, currentMax) ? currentMax : max;
+        return currentMax > max ? currentMax : max;
     }
 
     private int correctMaxColumnSize(int size) {
-        return checker.isEvenColumnsSize(size)
-                ? size + ADD_2
-                : size + ADD_3;
+        return checker.isEven(size)
+                ? size + ALIGN_FOR_EVEN
+                : size + ALIGN_FOR_ODD;
     }
 
     private int getMaxColumnLength(int maxColumnSize, int valuesLength) {
