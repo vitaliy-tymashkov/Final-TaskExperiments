@@ -16,8 +16,7 @@ import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 
-
-public class PrintTest {
+public class PrinterTest {
     private View view;
     private DatabaseManager manager;
     private Command command;
@@ -27,7 +26,7 @@ public class PrintTest {
     public void setup() {
         manager = Mockito.mock(DatabaseManager.class);
         view = Mockito.mock(View.class);
-        command = new Print(view, manager);
+        command = new Printer(view, manager);
     }
 
     @Test
@@ -149,7 +148,6 @@ public class PrintTest {
         dataSets.add(dataSet);
         Mockito.when(manager.getTableData("test")).thenReturn(dataSets);
     }
-
 
     private void assertPrinted(String expected) {
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
